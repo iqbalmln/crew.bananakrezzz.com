@@ -129,13 +129,13 @@ class CardController extends Controller
         card::where('id', $request->id_card)
             ->update(
                 [
-                    'nama' =>  $request->nama,
                     'nik' =>  $request->nik,
-                    'tanggal_lahir' =>  $request->tanggal_lahir ?: null,
+                    'nama' =>  $request->nama,
                     'asal' =>  $request->asal,
                     'jk' =>  $request->jk,
+                    'tempat_lahir' =>  $request->tempat_lahir ?: null,
+                    'tanggal_lahir' =>  $request->tanggal_lahir ?: null,
                     'hp' =>  $request->hp,
-                    'email' =>  $request->email,
                     'po' =>  $request->po,
                     'user_id' =>  $request->user_id,
                 ]

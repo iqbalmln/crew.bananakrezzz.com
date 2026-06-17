@@ -24,7 +24,7 @@
 
                         @foreach($crews as $crew)
                         <tr>
-                          <th class="">Card ID</th>
+                          <th class="">ID</th>
                           <td class=""></td>
                           <td class="">{{ $crew->nomor }}</td>
                         </tr>
@@ -34,39 +34,35 @@
                           <td class="">{{ $crew->nik }}</td>
                         </tr>
                         <tr>
-                          <th class="">Tanggal Lahir</th>
-                          <td class=""></td>
-                          <td class="">{{ $crew->tanggal_lahir }}</td>
-                        </tr>
-
-                        <tr>
                           <th class="">Nama</th>
                           <td class=""></td>
                           <td class="">{{ $crew->nama }}</td>
                         </tr>
                         <tr>
-                          <th class="">Asal</th>
+                          <th class="">Alamat</th>
                           <td class=""></td>
                           <td class="">{{ $crew->asal }}</td>
                         </tr>
-
                         <tr>
                           <th class="">Jenis Kelamin</th>
                           <td class=""></td>
                           <td class="">{{ $crew->jk }}</td>
                         </tr>
                         <tr>
-                          <th class="">Nomor Handphone</th>
+                          <th class="">Tempat / Tgl Lahir</th>
+                          <td class=""></td>
+                          <td class="">{{ $crew->tempat_lahir }}{{ $crew->tempat_lahir && $crew->tanggal_lahir ? ', ' : '' }}{{ $crew->tanggal_lahir }}</td>
+                        </tr>
+                        <tr>
+                          <th class="">No HP</th>
                           <td class=""></td>
                           <td class="">{{ $crew->hp }}</td>
                         </tr>
                         <tr>
-                          <th class="">Email</th>
+                          <th class="">PO / Biro</th>
                           <td class=""></td>
-                          <td class="">{{ $crew->email }}</td>
+                          <td class="">{{ $crew->po }}</td>
                         </tr>
-
-
                         @endforeach
                       </tbody>
                     </table>
@@ -461,35 +457,40 @@
           </div> -->
 
           <div class="form-group">
-            <label for="exampleInputEmail1">NIK</label>
+            <label>NIK</label>
             <input type="text" class="form-control" name="nik" value="{{ $crew->nik }}" required>
           </div>
           <div class="form-group">
-            <label for="exampleInputEmail1">Tanggal Lahir</label>
-            <input type="date" class="form-control" name="tanggal_lahir" value="{{ $crew->tanggal_lahir }}">
-          </div>
-          <div class="form-group">
-            <label for="exampleInputEmail1">Nama</label>
+            <label>Nama</label>
             <input type="text" class="form-control" name="nama" value="{{ $crew->nama }}">
           </div>
           <div class="form-group">
-            <label for="exampleInputEmail1">Asal</label>
+            <label>Alamat</label>
             <input type="text" class="form-control" name="asal" value="{{ $crew->asal }}">
           </div>
-
           <div class="form-group">
-            <label for="exampleInputEmail1">Jenis Kelamin</label>
-            <input type="text" class="form-control" name="jk" value="{{ $crew->jk }}">
+            <label>Jenis Kelamin</label>
+            <select class="form-control" name="jk">
+              <option value="">-- Pilih --</option>
+              <option value="Laki-Laki" {{ $crew->jk == 'Laki-Laki' ? 'selected' : '' }}>Laki-Laki</option>
+              <option value="Perempuan" {{ $crew->jk == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+            </select>
           </div>
-
           <div class="form-group">
-            <label for="exampleInputEmail1">Nomor Handphone</label>
+            <label>Tempat Lahir</label>
+            <input type="text" class="form-control" name="tempat_lahir" value="{{ $crew->tempat_lahir }}" placeholder="Kota tempat lahir">
+          </div>
+          <div class="form-group">
+            <label>Tanggal Lahir</label>
+            <input type="date" class="form-control" name="tanggal_lahir" value="{{ $crew->tanggal_lahir }}">
+          </div>
+          <div class="form-group">
+            <label>No HP</label>
             <input type="text" class="form-control" name="hp" value="{{ $crew->hp }}" required>
           </div>
-
           <div class="form-group">
-            <label for="exampleInputEmail1">Email</label>
-            <input type="text" class="form-control" name="email" value="{{ $crew->email }}">
+            <label>PO / Biro</label>
+            <input type="text" class="form-control" name="po" value="{{ $crew->po }}">
           </div>
 
           <!-- <div class="form-group">
