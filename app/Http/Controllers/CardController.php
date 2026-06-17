@@ -131,6 +131,7 @@ class CardController extends Controller
                 [
                     'nama' =>  $request->nama,
                     'nik' =>  $request->nik,
+                    'tanggal_lahir' =>  $request->tanggal_lahir ?: null,
                     'asal' =>  $request->asal,
                     'jk' =>  $request->jk,
                     'hp' =>  $request->hp,

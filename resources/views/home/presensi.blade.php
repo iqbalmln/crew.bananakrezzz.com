@@ -33,6 +33,11 @@
                           <td class=""></td>
                           <td class="">{{ $crew->nik }}</td>
                         </tr>
+                        <tr>
+                          <th class="">Tanggal Lahir</th>
+                          <td class=""></td>
+                          <td class="">{{ $crew->tanggal_lahir }}</td>
+                        </tr>
 
                         <tr>
                           <th class="">Nama</th>
@@ -458,6 +463,10 @@
           <div class="form-group">
             <label for="exampleInputEmail1">NIK</label>
             <input type="text" class="form-control" name="nik" value="{{ $crew->nik }}" required>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Tanggal Lahir</label>
+            <input type="date" class="form-control" name="tanggal_lahir" value="{{ $crew->tanggal_lahir }}">
           </div>
           <div class="form-group">
             <label for="exampleInputEmail1">Nama</label>
