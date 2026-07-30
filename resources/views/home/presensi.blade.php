@@ -56,17 +56,20 @@
                           <td class="">{{ $crew->jk }}</td>
                         </tr>
                         <tr>
-                          <th class="">Nomor Handphone</th>
+                          <th class="">Tempat / Tgl Lahir</th>
+                          <td class=""></td>
+                          <td class="">{{ $crew->tempat_lahir }}{{ $crew->tempat_lahir && $crew->tanggal_lahir ? ', ' : '' }}{{ $crew->tanggal_lahir }}</td>
+                        </tr>
+                        <tr>
+                          <th class="">No HP</th>
                           <td class=""></td>
                           <td class="">{{ $crew->hp }}</td>
                         </tr>
                         <tr>
-                          <th class="">Email</th>
+                          <th class="">PO / Biro</th>
                           <td class=""></td>
-                          <td class="">{{ $crew->email }}</td>
+                          <td class="">{{ $crew->po }}</td>
                         </tr>
-
-
                         @endforeach
                       </tbody>
                     </table>
