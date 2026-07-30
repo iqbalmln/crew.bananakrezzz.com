@@ -139,20 +139,29 @@ https://templatemo.com/tm-590-topic-listing
         </div>
 
         <!-- Form presensi manual -->
-       <form id="formpresensim" style="display:none;" action="/add_presensi">
+       <form id="formpresensim" style="display:none;" action="/add_presensi" enctype="multipart/form-data" method="post">
            @csrf
-  <div class="form-group">
-    <label for="exampleInputKTP">Masukan Nomor KTP Crew</label>
-    <input type="number" class="form-control" id="exampleInputKTP" placeholder="Nomor KTP Crew" reqired>
-    <input type="hidden" id="exampleNoCard" name="nomor" placeholder="Nomor Card" />
+          <div class="form-group">
+            <label for="exampleInputKTP">Masukan Nomor KTP Crew</label>
+            <input type="number" class="form-control" id="exampleInputKTP" placeholder="Nomor KTP Crew" reqired>
+            <input type="hidden" id="exampleNoCard" name="nomor" placeholder="Nomor Card" />
 
-    <div id="dataCrewList" style="display:none; margin-top:20px;">
-      <h5>Data Crew Ditemukan:</h5>
-      <ul id="crewResults" class="list-group"></ul> <!-- List untuk menampilkan hasil pencarian -->
-    </div>
-  </div>
-  <button type="submit" class="btn btn-primary" id="btnPresensi" style="display:none;">Presensi</button>
-</form>
+            <div id="dataCrewList" style="display:none; margin-top:20px;">
+              <h5>Data Crew Ditemukan:</h5>
+              <ul id="crewResults" class="list-group"></ul> <!-- List untuk menampilkan hasil pencarian -->
+            </div>
+
+            <label class="mt-3">Tanggal absen</label>
+            <input type="date" class="form-control" name="tgl" reqired>
+
+            <label class="mt-3">Jumlah total pembelian</label>
+            <input type="number" class="form-control" name="belanja" reqired>
+            
+            <label class="mt-3">Bukti absen</label>
+            <input type="file" class="form-control" name="image" reqired>
+          </div>
+          <button type="submit" class="btn btn-primary" id="btnPresensi" style="display:none;">Presensi</button>
+        </form>
 
 
 <script>
@@ -225,7 +234,8 @@ $jq(document).ready(function() {
 
 <script>
 // Password yang benar
-const correctPassword = "110101";
+{{-- const correctPassword = "11011"; --}}
+const correctPassword = "123";
 
 // Event listener untuk tombol submit password
 document.getElementById('submitPassword').addEventListener('click', function() {
@@ -261,7 +271,7 @@ $('#pmanual').on('shown.bs.modal', function () {
 
 
                 <div class="custom-form mt-4 pt-2 mb-lg-0 mb-5">
-                  <form method="get" role="search" action="/add_presensi">
+                  <form method="post" role="search" action="/add_presensi">
                     @csrf
                     <!-- <div class="text-center text-home mb-3">
                   <div class="form-check ">

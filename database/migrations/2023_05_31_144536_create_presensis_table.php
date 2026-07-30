@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('waktu');
             $table->string('tgl');
             $table->string('status');
+            $table->integer('status_approve')->default('0');
             $table->string('po')->default('-');
             $table->string('biro')->default('-');
             $table->string('bus')->default('-');

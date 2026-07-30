@@ -8,6 +8,12 @@
   <link rel="shortcut icon" type="image/png" href="logo.png" />
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.min.css" />
+  <style>
+    label[for="dt-length-0"] {
+      display:none;
+    } 
+  </style>
 </head>
 
 <body>
@@ -196,6 +202,14 @@
   <script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
   <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
   <script src="../assets/js/dashboard.js"></script>
+  <script src="https://cdn.datatables.net/2.3.1/js/dataTables.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $(".table-home").dataTable({
+        "ordering": false
+      })
+    })
+  </script>
 </body>
 
 </html>

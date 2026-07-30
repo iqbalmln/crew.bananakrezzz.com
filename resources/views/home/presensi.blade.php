@@ -36,7 +36,7 @@
                         <tr>
                           <th class="">Tanggal Lahir</th>
                           <td class=""></td>
-                          <td class="">{{ $crew->tanggal_lahir }}</td>
+                          <td class="">{{ $crew->tempat_lahir }}{{ $crew->tempat_lahir && $crew->tanggal_lahir ? ', ' : '' }}{{ $crew->tanggal_lahir }}</td>
                         </tr>
 
                         <tr>
@@ -217,7 +217,7 @@
                   <div class="row ">
                     <div class="col-sm-4">
                       <div class="" style="border-radius:50px;">
-                        <div class="card-body">
+                        <div class="card-body px-0">
                           <center>
                             <small class="card-text">Total Keseluruhan</small><br>
                             <a href="#" class="btn btn-warning">{{ session('jumlah') }}</a>
@@ -227,19 +227,19 @@
                     </div>
                     <div class="col-sm-4">
                       <div class="" style="border-radius:50px;">
-                        <div class="card-body">
+                        <div class="card-body px-0">
                           <center>
-                            <small class="card-text">Presensi Card</small><br>
-                            <a href="#" class="btn btn-primary">{{ session('total_card') }}</a>
+                            <small class="card-text">Reward Sudah Klaim</small><br>
+                            <a href="#" class="btn btn-primary">{{ session('sudah_klaim') }}</a>
                           </center>
                         </div>
                       </div>
                     </div>
                     <div class="col-sm-4">
-                      <div class="card-body">
+                      <div class="card-body px-0">
                         <center>
-                          <small class="card-text">Presensi Crew</small><br>
-                          <a href="#" class="btn btn-danger">{{ session('total_crew') }}</a>
+                          <small class="card-text">Reward Belum Klaim</small><br>
+                          <a href="#" class="btn btn-danger">{{ session('belum_klaim') }}</a>
                         </center>
                       </div>
                     </div>
@@ -256,7 +256,8 @@
                         <th scope="col">Bus</th>
                         <th scope="col">Belanja</th>
                         <th scope="col">Ket</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Status Approve</th>
+                        <th scope="col">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -285,23 +286,7 @@
                         <td>{{ number_format($crew->belanja) }}</td>
 
                         <td>{{ $crew->ket }}</td>
-                        <td>
-                          @if($crew->status=='')
-                          <smal>Validasi Informasi</smal>
-                          @endif
-                          @if($crew->status==1)
-                          <small class="text-danger">Presensi Crew</small>
-                          @endif
-                          @if($crew->status==2)
-                          <small class="text-primary"> Presensi Card
-                            @if($crew->reward==true)
-                            <span class="badge badge-success">Klaim</span>
-
-                            @endif
-                          </small>
-                          @endif
-
-                        </td>
+                        <td>{{ $crew->status_approve == 0 ? 'Not Approve' : 'Approved' }}</td>
                         <td>
 
 
@@ -329,6 +314,8 @@
                                       </p>
                                       <label>Kode Presensi</label>
                                       <input type="number" name="kode_hari" class="form-control" placeholder="Masukan Kode Presensi" value="{{ $crew->kode_hari }}" required>
+                                      <button class="btn btn-primary my-2 btn-sync" type="button">Sync</button>
+                                      <br>
                                       @if($crew->kode_hari && $crew->created_at->format('Y-m-d') === now()->format('Y-m-d'))
                                       <div class="card card-body mt-1">
                                         Presensi hari ini yang mengunakan kode presensi {{ $crew->kode_hari }}
@@ -349,7 +336,6 @@
 
                                               @foreach($presensi_hari as $hariItem)
                                               @if($hariItem->kode_hari === $crew->kode_hari)
-                                             
                                               <tr>
                                                 <td>{{ $hariItem->waktu }} - {{ $hariItem->tgl }}</td>
                                                 <td>{{ $hariItem->po }}</td>
@@ -375,18 +361,20 @@
                                       </div>
                                       @endif
 
-                                     
+
                                       <label>PO Bus</label>
-                                      <input type="text" name="po" class="form-control" placeholder="Masukan PO Bus" value="{{ $crew->po }}" required>
+                                      <input type="text" name="po" class="form-control" placeholder="Masukan PO Bus" value="{{ $crew->po }}" readonly>
                                       <label>Biro Bus</label>
-                                      <input type="text" name="biro" class="form-control" placeholder="Masukan Biro " value="{{ $crew->biro }}" required>
+                                      <input type="text" name="biro" class="form-control" placeholder="Masukan Biro " value="{{ $crew->biro }}" readonly>
                                       <label>Jumlah Bus</label>
-                                      <input type="text" name="bus" class="form-control" placeholder="Masukan Jumlah Bus" value="{{ $crew->bus }}" required>
+                                      <input type="text" name="bus" class="form-control" placeholder="Masukan Jumlah Bus" value="{{ $crew->bus }}" readonly>
                                       <label>Total Belanja</label>
-                                      <input type="number" name="belanja" class="form-control" placeholder="Masukan Total Belanja" value="{{ $crew->belanja }}">
+                                      <input type="text" name="belanja" class="form-control" placeholder="Masukan Total Belanja" value="{{ $crew->belanja }}" readonly>
+                                      <label>Nama Rombongan</label>
+                                      <input type="text" name="rombongan" class="form-control" placeholder="Nama Rombongan" value="{{ $crew->rombongan }}" readonly>
                                       <small id="emailHelp" class="form-text text-muted">Hanya masukan angka dan tanpa titik/koma</small>
                                       <label>Keterangan</label>
-                                      <input type="text" name="ket" class="form-control" placeholder="Masukan Keterangan" value="{{ $crew->ket }}" required>
+                                      <input type="text" name="ket" class="form-control" placeholder="Masukan Keterangan" value="{{ $crew->ket }}">
                                       <input type="hidden" name="presensi_id" value="{{ $crew->id }}">
                                       <input type="hidden" name="card_id" value="{{ $crew->card_id }}">
 
@@ -465,6 +453,10 @@
             <input type="text" class="form-control" name="nik" value="{{ $crew->nik }}" required>
           </div>
           <div class="form-group">
+            <label for="exampleInputEmail1">Tempat Lahir</label>
+            <input type="text" class="form-control" name="tempat_lahir" value="{{ $crew->tempat_lahir }}" placeholder="Kota tempat lahir">
+          </div>
+          <div class="form-group">
             <label for="exampleInputEmail1">Tanggal Lahir</label>
             <input type="date" class="form-control" name="tanggal_lahir" value="{{ $crew->tanggal_lahir }}">
           </div>
@@ -497,7 +489,6 @@
             <select class="form-select" aria-label="Default select example" name="user_id">
               @php
               $marketing = session('marketing') ?? [];
-              
               @endphp
               @foreach($marketing as $mark)
               <option selected value="{{ $mark->id }}">
@@ -509,7 +500,6 @@
                 $marketings = session('marketings') ?? [];
                 @endphp
                 @foreach($marketings as $mark)
-                
               <option value="{{ $mark->id }}">{{ $mark->nama }}</option>
               @endforeach
             </select>
@@ -576,3 +566,55 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script>
+    function parseDataCrew(input) {
+        let result = {
+            B: 0,
+            M: 0,
+            poBus: '',
+            biro: ''
+        };
+
+        const matchB = input.match(/(\d+)B/);
+        const matchM = input.match(/(\d+)M/);
+        if (matchB) result.B = parseInt(matchB[1]);
+        if (matchM) result.M = parseInt(matchM[1]);
+
+        const matches = input.match(/\((.*?)\)/g);
+        if (matches && matches.length >= 2) {
+            result.poBus = matches[0].replace(/[()]/g, '').trim(); // pertama
+            result.biro = matches[matches.length - 1].replace(/[()]/g, '').trim(); // terakhir
+        }
+
+        return result;
+    }
+
+
+  $(document).on('click','.btn-sync',function(){
+    {{-- const input1 = '1B (PO Bus) (Rombongan) (Biro)';
+    const input2 = '1B 2M (PO Bus) (Rombongan) (Biro)'; --}}
+
+    let kode_hari = $(this).parent().find('[name="kode_hari"]').val()
+    if (kode_hari == "") {
+      alert("Kode presensi wajib di isi untuk mengambil data")
+    }
+
+    fetch("https://cal-dev.bananakrezzz.com/rombongan/"+kode_hari).then(res => {
+    // fetch("http://127.0.0.1:8080/rombongan/"+kode_hari).then(res => {
+        if (res.status>=200 && res.status <300) {
+          return res.json()
+        }else{
+          throw new Error();
+        }
+    }).then(data => {
+      let data_split = parseDataCrew(data.nama)
+
+      $(this).parent().find('[name="belanja"]').val(data.total_belanja)
+      $(this).parent().find('[name="biro"]').val(data_split.biro)
+      $(this).parent().find('[name="bus"]').val(data_split.B)
+      $(this).parent().find('[name="po"]').val(data_split.poBus)
+      $(this).parent().find('[name="rombongan"]').val(data.nama)
+    })
+    .catch(err=>console.log('fetch() failed'))
+  })
+</script>

@@ -32,7 +32,7 @@
                 <div class="collapse" id="aktif">
                     <div class="card card-body">
                         <div class="table-responsive">
-                            <table class="table text-nowrap mb-0 align-middle">
+                            <table class="table text-nowrap mb-0 align-middle table-home">
                                 <thead class="text-dark fs-4">
                                     <tr>
                                         <th class="border-bottom-0">
@@ -134,7 +134,7 @@
                 <div class="collapse" id="pasif">
                     <div class="card card-body">
                         <div class="table-responsive">
-                            <table class="table text-nowrap mb-0 align-middle">
+                            <table class="table text-nowrap mb-0 align-middle table-home">
                                 <thead class="text-dark fs-4">
                                     <tr>
                                         <th class="border-bottom-0">
@@ -145,6 +145,8 @@
                                         </th>
                                         <th class="border-bottom-0">
                                             <h6 class="fw-semibold mb-0">Ditambahkan Pada</h6>
+                                        </th>
+                                        <th class="border-bottom-0">
                                         </th>
 
                                     </tr>

@@ -93,13 +93,13 @@
     @endphp
 
 @cannot('master')
-    <div class="col-lg-12 d-flex align-items-stretch">
+    <div class="col-lg-12 d-flex align-items-stretch mb-5">
         <div class="card w-100">
             <div class="card-body p-4">
                 <h5 class="card-title fw-semibold mb-4">Presensi Hari Ini "{{ $formattedDate }}" di {{ $store }}
                 </h5>
                 <div class="table-responsive">
-                    <table class="table text-nowrap mb-0 align-middle">
+                    <table class="table text-nowrap mb-0 align-middle table-home">
                         <thead class="text-dark fs-4">
                             <tr>
                                 <th class="border-bottom-0">
