@@ -138,12 +138,25 @@ https://templatemo.com/tm-590-topic-listing
           <button type="button" class="btn btn-primary" id="submitPassword">Submit</button>
         </div>
 
+        <!-- Info validasi gagal dari server -->
+        @if ($errors->any())
+        <div class="alert alert-danger" role="alert" id="errorpresensim">
+          <strong>Data belum lengkap!</strong>
+          <ul class="mb-0 pl-3">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+        @endif
+
         <!-- Form presensi manual -->
        <form id="formpresensim" style="display:none;" action="/add_presensi" enctype="multipart/form-data" method="post">
            @csrf
+           <input type="hidden" name="manual" value="1">
           <div class="form-group">
             <label for="exampleInputKTP">Masukan Nomor KTP Crew</label>
-            <input type="number" class="form-control" id="exampleInputKTP" placeholder="Nomor KTP Crew" reqired>
+            <input type="number" class="form-control" id="exampleInputKTP" placeholder="Nomor KTP Crew" required>
             <input type="hidden" id="exampleNoCard" name="nomor" placeholder="Nomor Card" />
 
             <div id="dataCrewList" style="display:none; margin-top:20px;">
@@ -152,13 +165,13 @@ https://templatemo.com/tm-590-topic-listing
             </div>
 
             <label class="mt-3">Tanggal absen</label>
-            <input type="date" class="form-control" name="tgl" reqired>
+            <input type="date" class="form-control" name="tgl" required>
 
             <label class="mt-3">Jumlah total pembelian</label>
-            <input type="number" class="form-control" name="belanja" reqired>
-            
+            <input type="number" class="form-control" name="belanja" min="0" required>
+
             <label class="mt-3">Bukti absen</label>
-            <input type="file" class="form-control" name="image" reqired>
+            <input type="file" class="form-control" name="image" accept="image/*" required>
           </div>
           <button type="submit" class="btn btn-primary" id="btnPresensi" style="display:none;">Presensi</button>
         </form>
@@ -252,11 +265,26 @@ document.getElementById('submitPassword').addEventListener('click', function() {
   }
 });
 
-// Event listener untuk saat modal dibuka, reset tampilan
+// Cek apakah server mengembalikan error validasi presensi manual
+function adaErrorManual() {
+  return document.getElementById('errorpresensim') !== null;
+}
+
+// Event listener untuk saat modal dibuka, reset tampilan.
+// Kalau ada error validasi dari server, form langsung ditampilkan
+// (password sudah dilewati sebelum submit) supaya pesannya bisa dibaca.
 $('#pmanual').on('shown.bs.modal', function () {
-  document.getElementById('inputpasswordm').style.display = 'block';
-  document.getElementById('formpresensim').style.display = 'none';
+  var error = adaErrorManual();
+  document.getElementById('inputpasswordm').style.display = error ? 'none' : 'block';
+  document.getElementById('formpresensim').style.display = error ? 'block' : 'none';
   document.getElementById('infogagal').style.display = 'none';
+});
+
+// Validasi server gagal, buka lagi modalnya supaya pesan error terlihat
+$(function () {
+  if (adaErrorManual()) {
+    $('#pmanual').modal('show');
+  }
 });
 </script>
 

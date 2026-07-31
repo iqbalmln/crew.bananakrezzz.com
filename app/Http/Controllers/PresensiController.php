@@ -49,6 +49,24 @@ class PresensiController extends Controller
 
     public function add_presensi(Request $request)
     {
+        // Presensi manual (input absen kertas) ditandai lewat hidden input 'manual',
+        // bukan lewat kosong/tidaknya tanggal seperti sebelumnya
+        $manual = $request->manual == 1;
+
+        if ($manual) {
+            $request->validate([
+                'nomor'   => 'required',
+                'tgl'     => 'required|date',
+                'belanja' => 'required|numeric|min:0',
+                'image'   => 'required|image',
+            ], [
+                'nomor.required' => 'Crew belum dipilih dari hasil pencarian nomor KTP.',
+                'tgl.required'   => 'Tanggal absen wajib diisi.',
+                'belanja.required' => 'Total pembelian wajib diisi.',
+                'image.required' => 'Bukti absen wajib diunggah.',
+            ]);
+        }
+
         $timestamp = time();
         $waktu = date('H:i', $timestamp);
 
@@ -57,7 +75,8 @@ class PresensiController extends Controller
         $belanja = null;
 
         if ($request->image != null) {
-            $myimage = $request->image->getClientOriginalName();
+            // Nama file dibuat unik supaya upload dengan nama sama tidak saling menimpa
+            $myimage = time() . '_' . uniqid() . '.' . $request->image->getClientOriginalExtension();
             $request->image->move(public_path($destinationPath), $myimage);
         }
         if(isset($request->belanja)){
@@ -170,32 +189,20 @@ class PresensiController extends Controller
 
                     $card_id = Card::where('nomor', $request->nomor)->first();
                     $store = store::where('id', Auth::user()->store_id)->value('id');
-                    if ($request->tgl == null) {
-                        presensi::create([
-                            'card_id' =>  $card_id->id,
-                            'store_id' =>  $store,
-                            'nomor' =>  $request->nomor,
-                            'nomor' =>  $request->nomor,
-                            'waktu' => $waktu,
-                            'tgl' => $tgl,
-                            'status' => '2',
-                            'status_approve' => '1',
-                            'image' => $myimage,
-                            'belanja' => $belanja
-                        ]);
-                    }else{
-                        presensi::create([
-                            'card_id' =>  $card_id->id,
-                            'store_id' =>  $store,
-                            'nomor' =>  $request->nomor,
-                            'nomor' =>  $request->nomor,
-                            'waktu' => $waktu,
-                            'tgl' => $tgl,
-                            'status' => '',
-                            'image' => $myimage,
-                            'belanja' => $belanja
-                        ]);
-                    }
+                    // Presensi RFID maupun manual sama-sama langsung disetujui.
+                    // Untuk presensi manual, bukti foto wajib diunggah (divalidasi di awal method),
+                    // itu yang jadi dasar approval-nya
+                    presensi::create([
+                        'card_id' =>  $card_id->id,
+                        'store_id' =>  $store,
+                        'nomor' =>  $request->nomor,
+                        'waktu' => $waktu,
+                        'tgl' => $tgl,
+                        'status' => '2',
+                        'status_approve' => '1',
+                        'image' => $myimage,
+                        'belanja' => $belanja
+                    ]);
                     $min_presensi = Setting::value('min_presensi');
                     $cards = card::where('nomor', $request->nomor)->join('card_levels', 'cards.level', '=', 'card_levels.id')
                         ->select('cards.nomor', 'card_levels.nama')
