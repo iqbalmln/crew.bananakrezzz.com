@@ -397,7 +397,7 @@ $(function () {
             <div class="row">
 
               <div class="col-12 text-center">
-                <h6 class="mb-0 text-danger"><i class="bi bi-info-circle"></i> Kartu sudah melakukan presensi</h1>
+                <h6 class="mb-0 text-danger"><i class="bi bi-info-circle"></i> Kartu sudah presensi hari ini</h1>
               </div>
 
             </div>

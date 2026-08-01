@@ -260,6 +260,7 @@
                         <th scope="col">Belanja</th>
                         <th scope="col">Ket</th>
                         <th scope="col">Status Approve</th>
+                        <th scope="col">Klaim</th>
                         <th scope="col">Aksi</th>
                       </tr>
                     </thead>
@@ -291,6 +292,13 @@
                         <td>{{ $crew->ket }}</td>
                         <td>{{ $crew->status_approve == 0 ? 'Not Approve' : 'Approved' }}</td>
                         <td>
+                          @if($crew->reward == 0)
+                          <span class="badge badge-warning">Belum Klaim</span>
+                          @else
+                          <span class="badge badge-success">Sudah Klaim</span>
+                          @endif
+                        </td>
+                        <td>
 
 
                           <button type="button" class="btn btn-info" style="border-radius: 50px;" data-toggle="modal" data-target="#total_belanja{{ $crew->id }}"><i class="bi bi-arrow-repeat"></i> </button>
@@ -317,7 +325,7 @@
                                       </p>
                                       <label>Kode Presensi</label>
                                       <input type="number" name="kode_hari" class="form-control" placeholder="Masukan Kode Presensi" value="{{ $crew->kode_hari }}" required>
-                                      <button class="btn btn-primary my-2 btn-sync" type="button">Sync</button>
+                                      {{-- Tombol Sync dinonaktifkan sementara, semua field diisi manual --}}
                                       <br>
                                       @if($crew->kode_hari && $crew->created_at->format('Y-m-d') === now()->format('Y-m-d'))
                                       <div class="card card-body mt-1">
@@ -366,15 +374,15 @@
 
 
                                       <label>PO Bus</label>
-                                      <input type="text" name="po" class="form-control" placeholder="Masukan PO Bus" value="{{ $crew->po }}" readonly>
+                                      <input type="text" name="po" class="form-control" placeholder="Masukan PO Bus" value="{{ $crew->po }}">
                                       <label>Biro Bus</label>
-                                      <input type="text" name="biro" class="form-control" placeholder="Masukan Biro " value="{{ $crew->biro }}" readonly>
+                                      <input type="text" name="biro" class="form-control" placeholder="Masukan Biro " value="{{ $crew->biro }}">
                                       <label>Jumlah Bus</label>
-                                      <input type="text" name="bus" class="form-control" placeholder="Masukan Jumlah Bus" value="{{ $crew->bus }}" readonly>
+                                      <input type="text" name="bus" class="form-control" placeholder="Masukan Jumlah Bus" value="{{ $crew->bus }}">
                                       <label>Total Belanja</label>
-                                      <input type="text" name="belanja" class="form-control" placeholder="Masukan Total Belanja" value="{{ $crew->belanja }}" readonly>
+                                      <input type="text" name="belanja" class="form-control" placeholder="Masukan Total Belanja" value="{{ $crew->belanja }}" inputmode="numeric">
                                       <label>Nama Rombongan</label>
-                                      <input type="text" name="rombongan" class="form-control" placeholder="Nama Rombongan" value="{{ $crew->rombongan }}" readonly>
+                                      <input type="text" name="rombongan" class="form-control" placeholder="Nama Rombongan" value="{{ $crew->rombongan }}">
                                       <small id="emailHelp" class="form-text text-muted">Hanya masukan angka dan tanpa titik/koma</small>
                                       <label>Keterangan</label>
                                       <input type="text" name="ket" class="form-control" placeholder="Masukan Keterangan" value="{{ $crew->ket }}">
