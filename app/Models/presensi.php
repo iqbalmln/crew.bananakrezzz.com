@@ -15,4 +15,9 @@ class presensi extends Model
     {
         return $this->belongsTo(card::class);
     }
+
+    public function marketing()
+    {
+        return $this->belongsTo(marketing::class);
+    }
 }

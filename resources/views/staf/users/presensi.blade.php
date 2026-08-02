@@ -131,47 +131,27 @@
                                 </td>
                                 <td class="border-bottom-0">
                                     <p class="mb-0 fw-normal">
-                                        @foreach($cards as $card)
-                                        @if($user->card_id==$card->id)
-                                        {{ $card->nomor }}
-                                        @endif
-                                        @endforeach
+                                        {{ $user->card->nomor ?? '' }}
                                     </p>
                                 </td>
                                 <td class="border-bottom-0">
                                     <p class="mb-0 fw-normal">
-                                        @foreach($cards as $card)
-                                        @if($user->card_id==$card->id)
-                                        {{ $card->nik }}
-                                        @endif
-                                        @endforeach
+                                        {{ $user->card->nik ?? '' }}
                                     </p>
                                 </td>
                                 <td class="border-bottom-0">
                                     <p class="mb-0 fw-normal">
-                                        @foreach($cards as $card)
-                                        @if($user->card_id==$card->id)
-                                        {{ $card->nama }}
-                                        @endif
-                                        @endforeach
+                                        {{ $user->card->nama ?? '' }}
                                     </p>
                                 </td>
                                 <td class="border-bottom-0">
                                     <p class="mb-0 fw-normal">
-                                        @foreach($cards as $card)
-                                        @if($user->card_id==$card->id)
-                                        {{ $card->asal }}
-                                        @endif
-                                        @endforeach
+                                        {{ $user->card->asal ?? '' }}
                                     </p>
                                 </td>
                                 <td class="border-bottom-0">
                                     <p class="mb-0 fw-normal">
-                                        @foreach($cards as $card)
-                                        @if($user->card_id==$card->id)
-                                        {{ $card->jk }}
-                                        @endif
-                                        @endforeach
+                                        {{ $user->card->jk ?? '' }}
                                     </p>
                                 </td>
                                 <td class="border-bottom-0">
@@ -199,11 +179,7 @@
                                     <!-- Button trigger modal -->
 
                                     @if($user->marketing_id!="")
-                                    @foreach($marketings as $marketing)
-                                    @if($user->marketing_id==$marketing->id)
-                                    {{ $marketing->nama }}
-                                    @endif
-                                    @endforeach
+                                    {{ $user->marketing->nama ?? '' }}
                                     @else
                                     Pilih Marketing
                                     @endif
@@ -282,23 +258,14 @@
                                                         <div class="input-group mb-3">
                                                             <select class="form-select" aria-label="Default select example" name="marketing">
                                                                 @if($user->marketing_id!="")
-                                                                @foreach($marketings as $marketing)
-                                                                @if($user->marketing_id==$marketing->id)
-                                                                <option value="{{ $marketing->id }}">
-                                                                    {{ $marketing->nama }}
+                                                                <option value="{{ $user->marketing_id }}">
+                                                                    {{ $user->marketing->nama ?? '' }}
                                                                 </option>
-                                                                @endif
-                                                                @endforeach
                                                                 @else
                                                                 <option value="">
                                                                     Pilih Marketing
                                                                 </option>
                                                                 @endif
-                                                                @foreach($marketings as $marketing)
-                                                                @if($user->marketing_id==$marketing->id)
-                                                                {{ $marketing->nama }}
-                                                                @endif
-                                                                @endforeach
                                                                 @foreach($marketings as $marketing)
                                                                 <option value=" {{ $marketing->id }}"> {{ $marketing->nama }}
                                                                 </option>

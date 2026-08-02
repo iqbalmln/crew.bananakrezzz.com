@@ -156,10 +156,13 @@
 
                             @php
                             $presensis_klaim = session('presensis_klaim') ?? []; // Jika session 'crews' null, gunakan array kosong sebagai fallback
+                            $crew_klaim = collect(session('crews') ?? [])->first();
                             @endphp
 
+                            {{-- Ditaruh di luar loop supaya tetap terkirim walau daftarnya kosong --}}
+                            <input type="hidden" name="card_id" value="{{ $crew_klaim->id ?? '' }}">
+
                             @foreach($presensis_klaim as $index => $presensi)
-                            <input type="hidden" name="card_id" value="{{ $presensi->card_id }}">
                             <tr>
                               <td>{{ $index + 1 }}</td>
                               <td>{{ $presensi->waktu }}</td>

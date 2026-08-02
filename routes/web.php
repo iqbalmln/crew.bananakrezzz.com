@@ -107,13 +107,13 @@ Route::post('/update.belanja', [PresensiController::class, 'update_belanja'])->m
 Route::get('/klaim_presensi', [KlaimController::class, 'klaim_presensi'])->middleware('auth');
 
 //setting
-Route::get('/setting', [SettingController::class, 'index'])->middleware('auth');
-Route::post('/update.setting', [SettingController::class, 'update'])->middleware('auth');
+Route::get('/setting', [SettingController::class, 'index'])->middleware(['auth', 'can:master']);
+Route::post('/update.setting', [SettingController::class, 'update'])->middleware(['auth', 'can:master']);
 
 //master
 
-Route::get('/master.users', [AdminController::class, 'master_users'])->middleware('auth');
-Route::post('/master.users.update', [AdminController::class, 'mster_users_update'])->middleware('auth');
+Route::get('/master.users', [AdminController::class, 'master_users'])->middleware(['auth', 'can:master']);
+Route::post('/master.users.update', [AdminController::class, 'mster_users_update'])->middleware(['auth', 'can:master']);
 
 
 //export
