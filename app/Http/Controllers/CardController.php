@@ -16,6 +16,8 @@ use DateTime;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
+use App\Exports\PresensiKartuExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CardController extends Controller
 {
@@ -460,6 +462,19 @@ class CardController extends Controller
             'marketings' => $marketing,
             'stores' => $stores,
             'filter' => $filter,
+            'total_manual' => $kartu_pasif->where('is_manual', true)->count(),
+            'total_rfid' => $kartu_pasif->where('is_manual', false)->count(),
         ]);
+    }
+
+    public function presensi_kartu_export(Request $request)
+    {
+        $storeId = auth()->user()->store_id;
+        $startDate = $request->filter == 1 ? $request->input('start_date') : null;
+        $endDate = $request->filter == 1 ? $request->input('end_date') : null;
+
+        $filename = 'presensi-crew-' . now()->format('Y-m-d_His') . '.xlsx';
+
+        return Excel::download(new PresensiKartuExport($storeId, $startDate, $endDate), $filename);
     }
 }

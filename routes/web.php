@@ -54,7 +54,7 @@ Route::get('/logout', [Controller::class, 'logout'])->middleware('auth');
 //presensi
 Route::post('/add_presensi', [PresensiController::class, 'add_presensi'])->middleware('auth');
 Route::post('/add_belanja', [PresensiController::class, 'add_belanja'])->middleware('auth');
-Route::get('/approve_presence/{id}', [PresensiController::class, 'approve_presence'])->middleware('auth');
+Route::get('/approve_presence/{id}', [PresensiController::class, 'approve_presence'])->middleware(['auth', 'can:admin-or-master']);
 Route::get('/add_presensi_id', [PresensiController::class, 'add_presensi_id'])->middleware('auth');
 
 //regis kartu
@@ -100,7 +100,8 @@ Route::get('/hapus.kartu', [CardController::class, 'hapus_kartu'])->middleware('
 
 
 
-Route::get('/presensi_kartu', [CardController::class, 'presensi_kartu'])->middleware('auth');
+Route::get('/presensi_kartu', [CardController::class, 'presensi_kartu'])->middleware(['auth', 'can:admin-or-master']);
+Route::get('/presensi_kartu/export', [CardController::class, 'presensi_kartu_export'])->middleware(['auth', 'can:admin-or-master']);
 
 Route::post('/update.belanja', [PresensiController::class, 'update_belanja'])->middleware('auth');
 

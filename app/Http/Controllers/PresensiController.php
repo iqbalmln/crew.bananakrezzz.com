@@ -121,7 +121,8 @@ class PresensiController extends Controller
                     'tgl' => $tgl,
                     'status' => '',
                     'image' => $myimage,
-                    'belanja' => $belanja
+                    'belanja' => $belanja,
+                    'is_manual' => $manual,
 
                 ]);
                 $min_presensi = Setting::value('min_presensi');
@@ -204,19 +205,33 @@ class PresensiController extends Controller
 
                     $card_id = Card::where('nomor', $request->nomor)->first();
                     $store = store::where('id', Auth::user()->store_id)->value('id');
-                    // Presensi RFID maupun manual sama-sama langsung disetujui.
-                    // Untuk presensi manual, bukti foto wajib diunggah (divalidasi di awal method),
-                    // itu yang jadi dasar approval-nya
-                    presensi::create([
-                        'card_id' =>  $card_id->id,
-                        'store_id' =>  $store,
-                        'waktu' => $waktu,
-                        'tgl' => $tgl,
-                        'status' => '2',
-                        'status_approve' => '1',
-                        'image' => $myimage,
-                        'belanja' => $belanja
-                    ]);
+                    // Presensi RFID langsung disetujui. Presensi manual (input absen kertas oleh staf)
+                    // sengaja menunggu approval Admin/Master, bukti fotonya jadi dasar mereka approve.
+                    if (! $manual) {
+                        presensi::create([
+                            'card_id' =>  $card_id->id,
+                            'store_id' =>  $store,
+                            'waktu' => $waktu,
+                            'tgl' => $tgl,
+                            'status' => '2',
+                            'status_approve' => '1',
+                            'image' => $myimage,
+                            'belanja' => $belanja,
+                            'is_manual' => false,
+                        ]);
+                    } else {
+                        presensi::create([
+                            'card_id' =>  $card_id->id,
+                            'store_id' =>  $store,
+                            'waktu' => $waktu,
+                            'tgl' => $tgl,
+                            'status' => '',
+                            'status_approve' => '0',
+                            'image' => $myimage,
+                            'belanja' => $belanja,
+                            'is_manual' => true,
+                        ]);
+                    }
                     $min_presensi = Setting::value('min_presensi');
                     $cards = card::where('nomor', $request->nomor)->join('card_levels', 'cards.level', '=', 'card_levels.id')
                         ->select('cards.nomor', 'card_levels.nama')

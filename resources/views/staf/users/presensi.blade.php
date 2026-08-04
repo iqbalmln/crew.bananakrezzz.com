@@ -63,6 +63,18 @@
                     </form>
                 </div>
 
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <small class="text-muted">
+                        Menampilkan {{ $users->count() }} presensi
+                        &mdash; <span class="badge bg-warning">Manual: {{ $total_manual }}</span>
+                        <span class="badge bg-info">RFID: {{ $total_rfid }}</span>
+                    </small>
+                    <a href="/presensi_kartu/export?filter={{ request()->input('filter', 0) }}&start_date={{ request()->input('start_date') }}&end_date={{ request()->input('end_date') }}"
+                        class="btn btn-outline-success btn-sm">
+                        <i class="bi bi-download"></i> Export
+                    </a>
+                </div>
+
 
                 <div class="table-responsive">
                     <table class="table text-nowrap mb-0 align-middle table-home">
@@ -70,6 +82,9 @@
                             <tr>
                                 <th class="border-bottom-0">
                                     <h6 class="fw-semibold mb-0">Presensi Pada</h6>
+                                </th>
+                                <th class="border-bottom-0">
+                                    <h6 class="fw-semibold mb-0">Sumber</h6>
                                 </th>
                                 <th class="border-bottom-0">
                                     <h6 class="fw-semibold mb-0">ID Kartu</h6>
@@ -128,6 +143,13 @@
                                     <p class="mb-0 fw-normal">
                                         {{$user->waktu}} - {{$user->tgl}}
                                     </p>
+                                </td>
+                                <td class="border-bottom-0">
+                                    @if($user->is_manual)
+                                    <span class="badge bg-warning">Manual</span>
+                                    @else
+                                    <span class="badge bg-info">RFID</span>
+                                    @endif
                                 </td>
                                 <td class="border-bottom-0">
                                     <p class="mb-0 fw-normal">

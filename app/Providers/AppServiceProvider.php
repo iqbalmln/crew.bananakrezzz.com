@@ -24,5 +24,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('master', function (User $user) {
             return $user->level === 'master';
         });
+
+        Gate::define('admin-or-master', function (User $user) {
+            return in_array($user->level, ['admin', 'master']);
+        });
     }
 }
