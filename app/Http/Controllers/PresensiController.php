@@ -105,7 +105,30 @@ class PresensiController extends Controller
                     ->count();
 
                 if ($presensiHariIni >= 1) {
-                    session()->forget('pres');
+                    // Kartu sudah presensi hari ini — tetap tampilkan info crew & jumlah presensinya,
+                    // supaya staf tidak perlu search ulang saat crew/biro tanya "sudah dapat berapa".
+                    $min_presensi = Setting::value('min_presensi');
+                    $cards = card::where('nomor', $request->nomor)->join('card_levels', 'cards.level', '=', 'card_levels.id')
+                        ->select('cards.nomor', 'card_levels.nama')
+                        ->get();
+
+                    session()->flash('level', $cards);
+                    session()->flash('pres', true);
+                    session()->flash('nomor', 1);
+                    session()->flash('presensis', presensi::where('card_id', $kartu->id)->latest()->get());
+                    session()->flash('jumlah', presensi::where('card_id', $kartu->id)->count());
+                    session()->flash('sudah_klaim', presensi::where('card_id', $kartu->id)->where('reward', 1)->count());
+                    session()->flash('belum_klaim', presensi::where('card_id', $kartu->id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->count());
+                    session()->flash('total_card', presensi::where('card_id', $kartu->id)->where('status', 2)->count());
+                    session()->flash('total_crew', presensi::where('card_id', $kartu->id)->where('status', 1)->count());
+                    session()->flash('crews', card::where('nomor', $request->nomor)->get());
+                    session()->flash('stores', store::get());
+                    session()->flash('presensi_reward', presensi::where('card_id', $kartu->id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->count());
+                    session()->flash('presensis_klaim', presensi::where('card_id', $kartu->id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->latest()->get());
+                    session()->flash('rewards', reward::where('card_id', $kartu->id)->get());
+                    session()->flash('min_presensi', $min_presensi);
+                    session()->flash('marketing', User::where('id', $kartu->user_id)->get('nama'));
+                    session()->flash('marketings', User::where('level', 'marketing')->get());
 
                     return back()->with('sudah_presensi', 'gagal');
                 }
