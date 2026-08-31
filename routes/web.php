@@ -100,7 +100,9 @@ Route::get('/hapus.kartu', [CardController::class, 'hapus_kartu'])->middleware('
 
 
 
-Route::get('/presensi_kartu', [CardController::class, 'presensi_kartu'])->middleware(['auth', 'can:admin-or-master']);
+// TODO: sementara dibuka untuk semua level (2026-08-06) — kembalikan ke 'can:admin-or-master' setelah tidak dibutuhkan lagi.
+// Approve tetap terkunci Admin/Master lewat route /approve_presence di bawah, jadi staf cuma bisa lihat, tidak bisa approve.
+Route::get('/presensi_kartu', [CardController::class, 'presensi_kartu'])->middleware(['auth']);
 Route::get('/presensi_kartu/export', [CardController::class, 'presensi_kartu_export'])->middleware(['auth', 'can:admin-or-master']);
 
 Route::post('/update.belanja', [PresensiController::class, 'update_belanja'])->middleware('auth');
