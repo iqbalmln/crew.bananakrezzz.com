@@ -28,7 +28,11 @@ class Controller extends BaseController
             // Token login baru menggantikan yang lama, sehingga sesi di device lain otomatis
             // ter-logout begitu mereka request halaman berikutnya (dicek di EnsureSingleSession).
             $loginToken = Str::random(60);
-            Auth::user()->update(['current_login_token' => $loginToken]);
+            // Set langsung (bukan update()) supaya tidak diam-diam diabaikan oleh
+            // $fillable milik User yang tidak memasukkan kolom ini.
+            $user = Auth::user();
+            $user->current_login_token = $loginToken;
+            $user->save();
             $request->session()->put('login_token', $loginToken);
 
             if (Auth::user()->level == 'marketing') {
