@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
@@ -24,6 +25,12 @@ class Controller extends BaseController
             'password' => 'required'
         ]);
         if (Auth::attempt($validate)) {
+            // Token login baru menggantikan yang lama, sehingga sesi di device lain otomatis
+            // ter-logout begitu mereka request halaman berikutnya (dicek di EnsureSingleSession).
+            $loginToken = Str::random(60);
+            Auth::user()->update(['current_login_token' => $loginToken]);
+            $request->session()->put('login_token', $loginToken);
+
             if (Auth::user()->level == 'marketing') {
 
                 $request->session()->regenerate();
