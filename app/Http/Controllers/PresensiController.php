@@ -746,7 +746,7 @@ class PresensiController extends Controller
     }
 
     function rupiah($angka){
-        $hasil_rupiah = "Rp " . number_format($angka, 0, ',', '.');
+        $hasil_rupiah = "Rp " . number_format((float) ($angka ?? 0), 0, ',', '.');
         return $hasil_rupiah;
     }
 

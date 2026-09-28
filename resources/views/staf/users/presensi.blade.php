@@ -190,7 +190,7 @@
                                     <!-- Button trigger modal -->
 
                                     @if($user->belanja!="")
-                                    Rp. {{ number_format($user->belanja)}}
+                                    Rp. {{ number_format((float) ($user->belanja ?? 0))}}
                                     @else
                                     Atur Total Belanja
                                     @endif
