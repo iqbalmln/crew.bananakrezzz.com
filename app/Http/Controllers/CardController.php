@@ -118,6 +118,9 @@ class CardController extends Controller
     }
     public function crew_update(Request $request)
     {
+        // belanja adalah nominal rupiah: tolak teks sejak di pintu masuk, supaya
+        // tidak ada lagi "NABARU"/"B12" yang lolos ke database.
+        $request->validate(['belanja' => 'nullable|numeric|min:0']);
         $db = setting::value('belanja');
         $min_presensi = Setting::value('min_presensi');
         $belanja = $request->belanja;
@@ -172,6 +175,9 @@ class CardController extends Controller
 
     public function card_update(Request $request)
     {
+        // belanja adalah nominal rupiah: tolak teks sejak di pintu masuk, supaya
+        // tidak ada lagi "NABARU"/"B12" yang lolos ke database.
+        $request->validate(['belanja' => 'nullable|numeric|min:0']);
         $db = setting::value('belanja');
         $min_presensi = Setting::value('min_presensi');
         $belanja = $request->belanja;

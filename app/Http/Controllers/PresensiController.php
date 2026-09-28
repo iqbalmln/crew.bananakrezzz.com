@@ -49,6 +49,9 @@ class PresensiController extends Controller
 
     public function add_presensi(Request $request)
     {
+        // belanja adalah nominal rupiah: tolak teks sejak di pintu masuk, supaya
+        // tidak ada lagi "NABARU"/"B12" yang lolos ke database.
+        $request->validate(['belanja' => 'nullable|numeric|min:0']);
         // Presensi manual (input absen kertas) ditandai lewat hidden input 'manual',
         // bukan lewat kosong/tidaknya tanggal seperti sebelumnya
         $manual = $request->manual == 1;
@@ -437,6 +440,9 @@ class PresensiController extends Controller
 
     public function add_belanja(Request $request)
     {
+        // belanja adalah nominal rupiah: tolak teks sejak di pintu masuk, supaya
+        // tidak ada lagi "NABARU"/"B12" yang lolos ke database.
+        $request->validate(['belanja' => 'nullable|numeric|min:0']);
 
 
         $hariSaatIni = Carbon::now()->startOfDay(); // Start of the current day
@@ -551,6 +557,9 @@ class PresensiController extends Controller
 
     public function klaim_reward(Request $request)
     {
+        // belanja adalah nominal rupiah: tolak teks sejak di pintu masuk, supaya
+        // tidak ada lagi "NABARU"/"B12" yang lolos ke database.
+        $request->validate(['belanja' => 'nullable|numeric|min:0']);
 
         $db = Setting::value('belanja');
         $min_presensi = Setting::value('min_presensi');
@@ -683,6 +692,9 @@ class PresensiController extends Controller
 
     public function update_belanja(Request $request)
     {
+        // belanja adalah nominal rupiah: tolak teks sejak di pintu masuk, supaya
+        // tidak ada lagi "NABARU"/"B12" yang lolos ke database.
+        $request->validate(['belanja' => 'nullable|numeric|min:0']);
 
         $db = Setting::value('belanja');
         $min_presensi = Setting::value('min_presensi');
