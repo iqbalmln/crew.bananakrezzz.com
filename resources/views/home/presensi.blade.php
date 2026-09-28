@@ -13,7 +13,7 @@
                 <div class="custom-block-overlay-text " style="width: 100%;">
                   <div>
                     <h5 class="text-black mb-2">
-                    Informasi Crew
+                      Informasi Crew
                     </h5>
 
                     <table class="table">
@@ -290,7 +290,7 @@
                         <td>{{ $crew->po }}</td>
                         <td>{{ $crew->biro }}</td>
                         <td>{{ $crew->bus }}</td>
-                        <td>{{ number_format($crew->belanja) }}</td>
+                        <td>{{ number_format((float) ($crew->belanja ?? 0)) }}</td>
 
                         <td>{{ $crew->ket }}</td>
                         <td>{{ $crew->status_approve == 0 ? 'Not Approve' : 'Approved' }}</td>
@@ -581,54 +581,60 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script>
-    function parseDataCrew(input) {
-        let result = {
-            B: 0,
-            M: 0,
-            poBus: '',
-            biro: ''
-        };
+  function parseDataCrew(input) {
+    let result = {
+      B: 0,
+      M: 0,
+      poBus: '',
+      biro: ''
+    };
 
-        const matchB = input.match(/(\d+)B/);
-        const matchM = input.match(/(\d+)M/);
-        if (matchB) result.B = parseInt(matchB[1]);
-        if (matchM) result.M = parseInt(matchM[1]);
+    const matchB = input.match(/(\d+)B/);
+    const matchM = input.match(/(\d+)M/);
+    if (matchB) result.B = parseInt(matchB[1]);
+    if (matchM) result.M = parseInt(matchM[1]);
 
-        const matches = input.match(/\((.*?)\)/g);
-        if (matches && matches.length >= 2) {
-            result.poBus = matches[0].replace(/[()]/g, '').trim(); // pertama
-            result.biro = matches[matches.length - 1].replace(/[()]/g, '').trim(); // terakhir
-        }
-
-        return result;
+    const matches = input.match(/\((.*?)\)/g);
+    if (matches && matches.length >= 2) {
+      result.poBus = matches[0].replace(/[()]/g, '').trim(); // pertama
+      result.biro = matches[matches.length - 1].replace(/[()]/g, '').trim(); // terakhir
     }
 
+    return result;
+  }
 
-  $(document).on('click','.btn-sync',function(){
-    {{-- const input1 = '1B (PO Bus) (Rombongan) (Biro)';
-    const input2 = '1B 2M (PO Bus) (Rombongan) (Biro)'; --}}
+
+  $(document).on('click', '.btn-sync', function() {
+    {
+      {
+        --
+        const input1 = '1B (PO Bus) (Rombongan) (Biro)';
+        const input2 = '1B 2M (PO Bus) (Rombongan) (Biro)';
+        --
+      }
+    }
 
     let kode_hari = $(this).parent().find('[name="kode_hari"]').val()
     if (kode_hari == "") {
       alert("Kode presensi wajib di isi untuk mengambil data")
     }
 
-    fetch("https://cal-dev.bananakrezzz.com/rombongan/"+kode_hari).then(res => {
-    // fetch("http://127.0.0.1:8080/rombongan/"+kode_hari).then(res => {
-        if (res.status>=200 && res.status <300) {
+    fetch("https://cal-dev.bananakrezzz.com/rombongan/" + kode_hari).then(res => {
+        // fetch("http://127.0.0.1:8080/rombongan/"+kode_hari).then(res => {
+        if (res.status >= 200 && res.status < 300) {
           return res.json()
-        }else{
+        } else {
           throw new Error();
         }
-    }).then(data => {
-      let data_split = parseDataCrew(data.nama)
+      }).then(data => {
+        let data_split = parseDataCrew(data.nama)
 
-      $(this).parent().find('[name="belanja"]').val(data.total_belanja)
-      $(this).parent().find('[name="biro"]').val(data_split.biro)
-      $(this).parent().find('[name="bus"]').val(data_split.B)
-      $(this).parent().find('[name="po"]').val(data_split.poBus)
-      $(this).parent().find('[name="rombongan"]').val(data.nama)
-    })
-    .catch(err=>console.log('fetch() failed'))
+        $(this).parent().find('[name="belanja"]').val(data.total_belanja)
+        $(this).parent().find('[name="biro"]').val(data_split.biro)
+        $(this).parent().find('[name="bus"]').val(data_split.B)
+        $(this).parent().find('[name="po"]').val(data_split.poBus)
+        $(this).parent().find('[name="rombongan"]').val(data.nama)
+      })
+      .catch(err => console.log('fetch() failed'))
   })
 </script>
