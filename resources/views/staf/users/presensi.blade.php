@@ -7,6 +7,19 @@
         <div class="card w-100">
 
             <div class="card-body p-4">
+                {{-- Validasi gagal dari server. Form /update.belanja ada di dalam modal,
+                     dan modal tertutup setelah redirect, jadi pesannya harus tampil di
+                     level halaman seperti ini agar terlihat. --}}
+                @if ($errors->any())
+                <div class="alert alert-danger" role="alert">
+                    <strong>Data belum lengkap!</strong>
+                    <ul class="mb-0 pl-3">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
                 @if(session()->has('user.add'))
                 <div class="alert alert-primary alert-dismissible fade show" role="alert">
                     <strong>Berhasil!</strong> User Ditambahkan
