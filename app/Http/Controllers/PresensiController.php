@@ -82,11 +82,11 @@ class PresensiController extends Controller
             $myimage = time() . '_' . uniqid() . '.' . $request->image->getClientOriginalExtension();
             $request->image->move(public_path($destinationPath), $myimage);
         }
-        if(isset($request->belanja)){
+        if (isset($request->belanja)) {
             $today = Carbon::parse($request->tgl);
             $tgl = $today->format('d M Y');
             $belanja = $request->belanja;
-        }else{
+        } else {
             $today = Carbon::now();
             $tgl = $today->format('d M Y');
         }
@@ -162,8 +162,8 @@ class PresensiController extends Controller
 
                 session()->flash('presensis', presensi::where('card_id', $card_id->id)->latest()->get());
                 session()->flash('jumlah', presensi::where('card_id', $card_id->id)->count());
-                session()->flash('sudah_klaim', presensi::where('card_id', $card_id->id)->where('reward',1)->count());
-                session()->flash('belum_klaim', presensi::where('card_id', $card_id->id)->where('status',2)->where('status_approve',1)->where('reward',0)->count());
+                session()->flash('sudah_klaim', presensi::where('card_id', $card_id->id)->where('reward', 1)->count());
+                session()->flash('belum_klaim', presensi::where('card_id', $card_id->id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->count());
                 session()->flash('total_card', presensi::where('card_id', $card_id->id)->where('status', 2)->count());
                 session()->flash('total_crew', presensi::where('card_id', $card_id->id)->where('status', 1)->count());
                 session()->flash('crews', card::where('nomor', $request->nomor)->get());
@@ -229,83 +229,83 @@ class PresensiController extends Controller
                 //     return back()->with('sudah_presensi', 'gagal');
                 // } else {
 
-                    $card_id = Card::where('nomor', $request->nomor)->first();
-                    $store = store::where('id', Auth::user()->store_id)->value('id');
-                    // Presensi RFID langsung disetujui. Presensi manual (input absen kertas oleh staf)
-                    // sengaja menunggu approval Admin/Master, bukti fotonya jadi dasar mereka approve.
-                    if (! $manual) {
-                        presensi::create([
-                            'card_id' =>  $card_id->id,
-                            'store_id' =>  $store,
-                            'waktu' => $waktu,
-                            'tgl' => $tgl,
-                            'status' => '2',
-                            'status_approve' => '1',
-                            'image' => $myimage,
-                            'belanja' => $belanja,
-                            'is_manual' => false,
-                        ]);
-                    } else {
-                        presensi::create([
-                            'card_id' =>  $card_id->id,
-                            'store_id' =>  $store,
-                            'waktu' => $waktu,
-                            'tgl' => $tgl,
-                            'status' => '',
-                            'status_approve' => '0',
-                            'image' => $myimage,
-                            'belanja' => $belanja,
-                            'is_manual' => true,
-                        ]);
-                    }
-                    $min_presensi = Setting::value('min_presensi');
-                    $cards = card::where('nomor', $request->nomor)->join('card_levels', 'cards.level', '=', 'card_levels.id')
-                        ->select('cards.nomor', 'card_levels.nama')
-                        ->get();
-                    session()->flash('level', $cards);
-                    session()->flash('pres', true);
-                    session()->flash('nomor', 1);
+                $card_id = Card::where('nomor', $request->nomor)->first();
+                $store = store::where('id', Auth::user()->store_id)->value('id');
+                // Presensi RFID langsung disetujui. Presensi manual (input absen kertas oleh staf)
+                // sengaja menunggu approval Admin/Master, bukti fotonya jadi dasar mereka approve.
+                if (! $manual) {
+                    presensi::create([
+                        'card_id' =>  $card_id->id,
+                        'store_id' =>  $store,
+                        'waktu' => $waktu,
+                        'tgl' => $tgl,
+                        'status' => '2',
+                        'status_approve' => '1',
+                        'image' => $myimage,
+                        'belanja' => $belanja,
+                        'is_manual' => false,
+                    ]);
+                } else {
+                    presensi::create([
+                        'card_id' =>  $card_id->id,
+                        'store_id' =>  $store,
+                        'waktu' => $waktu,
+                        'tgl' => $tgl,
+                        'status' => '',
+                        'status_approve' => '0',
+                        'image' => $myimage,
+                        'belanja' => $belanja,
+                        'is_manual' => true,
+                    ]);
+                }
+                $min_presensi = Setting::value('min_presensi');
+                $cards = card::where('nomor', $request->nomor)->join('card_levels', 'cards.level', '=', 'card_levels.id')
+                    ->select('cards.nomor', 'card_levels.nama')
+                    ->get();
+                session()->flash('level', $cards);
+                session()->flash('pres', true);
+                session()->flash('nomor', 1);
 
 
-                    session()->flash('presensis', presensi::where('card_id', $card_id->id)->latest()->get());
-                    session()->flash('jumlah', presensi::where('card_id', $card_id->id)->count());
-                    session()->flash('sudah_klaim', presensi::where('card_id', $card_id->id)->where('reward',1)->count());
-                    session()->flash('belum_klaim', presensi::where('card_id', $card_id->id)->where('status',2)->where('status_approve',1)->where('reward',0)->count());
-                    session()->flash('total_card', presensi::where('card_id', $card_id->id)->where('status', 2)->count());
-                    session()->flash('total_crew', presensi::where('card_id', $card_id->id)->where('status', 1)->count());
-                    session()->flash('crews', card::where('nomor', $request->nomor)->get());
-                    session()->flash('stores', store::get());
-                    session()->flash('presensi_reward', presensi::where('card_id', $card_id->id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->count());
-                    session()->flash('presensis_klaim', presensi::where('card_id', $card_id->id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->latest()->get());
-                    session()->flash('rewards', reward::where('card_id', $card_id->id)->get());
-                    session()->flash('min_presensi', $min_presensi);
+                session()->flash('presensis', presensi::where('card_id', $card_id->id)->latest()->get());
+                session()->flash('jumlah', presensi::where('card_id', $card_id->id)->count());
+                session()->flash('sudah_klaim', presensi::where('card_id', $card_id->id)->where('reward', 1)->count());
+                session()->flash('belum_klaim', presensi::where('card_id', $card_id->id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->count());
+                session()->flash('total_card', presensi::where('card_id', $card_id->id)->where('status', 2)->count());
+                session()->flash('total_crew', presensi::where('card_id', $card_id->id)->where('status', 1)->count());
+                session()->flash('crews', card::where('nomor', $request->nomor)->get());
+                session()->flash('stores', store::get());
+                session()->flash('presensi_reward', presensi::where('card_id', $card_id->id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->count());
+                session()->flash('presensis_klaim', presensi::where('card_id', $card_id->id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->latest()->get());
+                session()->flash('rewards', reward::where('card_id', $card_id->id)->get());
+                session()->flash('min_presensi', $min_presensi);
 
-                    session()->flash('marketing', User::where('id', $card_id->user_id)->get('nama'));
-                    session()->flash('marketings', User::where('level', 'marketing')->get());
+                session()->flash('marketing', User::where('id', $card_id->user_id)->get('nama'));
+                session()->flash('marketings', User::where('level', 'marketing')->get());
 
-                    // Kirim notifikasi WhatsApp
-                    $phone = card::where('id', $card_id->id)->first()->hp;
-                    if ($phone) {
-                        $phone = $this->formatNomor($phone);
-                        $storeName = store::where('id', Auth::user()->store_id)->value('nama');
+                // Kirim notifikasi WhatsApp
+                $phone = card::where('id', $card_id->id)->first()->hp;
+                if ($phone) {
+                    $phone = $this->formatNomor($phone);
+                    $storeName = store::where('id', Auth::user()->store_id)->value('nama');
 
-                        $api_key_wa = "u2a53a9beb36e4f5.7dc9be52f701442cafbf96cc899838f8";
-                        $url_wa = 'https://wa5901.oneapi.my.id/api/v1/messages';
+                    $api_key_wa = "uc2af632eb985457.ec7cc53448054d67bd738b54435f2502";
+                    $url_wa = 'https://wa51596.oneapi.my.id/api/v1/messages';
 
-                        $client = new MessageBuilder([
-                            'api_url' => $url_wa,
-                            'api_key' => $api_key_wa,
-                        ]);
+                    $client = new MessageBuilder([
+                        'api_url' => $url_wa,
+                        'api_key' => $api_key_wa,
+                    ]);
 
-                        $text = $client->to($phone)
-                            ->content("Presensi panjenengan sampun kasil! &#13;&#13;Wonten ing $storeName &#13;Tanggal : $tgl &#13;Wekdal : $waktu &#13;&#13;Matur Suwun sampun pinarak Kampoeng Banana Krezzz🙏🏻☺️")
-                            ->save();
+                    $text = $client->to($phone)
+                        ->content("Presensi panjenengan sampun kasil! &#13;&#13;Wonten ing $storeName &#13;Tanggal : $tgl &#13;Wekdal : $waktu &#13;&#13;Matur Suwun sampun pinarak Kampoeng Banana Krezzz🙏🏻☺️")
+                        ->save();
 
-                        $messages = [$text];
-                        $client->send($messages);
-                    }
+                    $messages = [$text];
+                    $client->send($messages);
+                }
 
-                    return back()->with('berhasil_presensi', 'oke');
+                return back()->with('berhasil_presensi', 'oke');
                 // }
             }
         } elseif ($cardCount > 1) {
@@ -326,8 +326,8 @@ class PresensiController extends Controller
             session()->flash('presensis_klaim', presensi::where('card_id', $card_id->id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->latest()->get());
             session()->flash('rewards', reward::where('card_id', $card_id->id)->get());
             session()->flash('jumlah', presensi::all());
-            session()->flash('sudah_klaim', presensi::where('card_id', $card_id->id)->where('reward',1)->count());
-            session()->flash('belum_klaim', presensi::where('card_id', $card_id->id)->where('status',2)->where('status_approve',1)->where('reward',0)->count());
+            session()->flash('sudah_klaim', presensi::where('card_id', $card_id->id)->where('reward', 1)->count());
+            session()->flash('belum_klaim', presensi::where('card_id', $card_id->id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->count());
 
             session()->flash('min_presensi', $min_presensi);
             session()->flash('stores', store::get());
@@ -455,7 +455,7 @@ class PresensiController extends Controller
             $status = 1;
         }
         if ($db < $belanja) {
-            $status = 2; 
+            $status = 2;
         }
 
 
@@ -501,11 +501,11 @@ class PresensiController extends Controller
             ->select('card_levels.*', 'card_levels.nama')
             ->get();
 
-        $phone = card::where('id',$request->card_id)->first()->hp;
+        $phone = card::where('id', $request->card_id)->first()->hp;
         $phone = $this->formatNomor($phone);
-        
-        $api_key_wa = "u2a53a9beb36e4f5.7dc9be52f701442cafbf96cc899838f8"; 
-        $url_wa = 'https://wa5901.oneapi.my.id/api/v1/messages';
+
+        $api_key_wa = "uc2af632eb985457.ec7cc53448054d67bd738b54435f2502";
+        $url_wa = 'https://wa51596.oneapi.my.id/api/v1/messages';
 
         $client = new MessageBuilder([
             'api_url' => $url_wa,
@@ -516,7 +516,7 @@ class PresensiController extends Controller
         $rombongan = $request->rombongan;
         $text = $client->to($phone)
             ->content("
-                Sugeng Rawuh Dhateng  Kampoeng Banana Krezzz Cabang (x) &#13;&#13;• Rombongan : $rombongan &#13;• Tabuh : ".date("Y-m-d")."&#13;• Total Belanja : $belanja_rp &#13;&#13;Matur Suwun sampun pinarak Kampoeng Banana Krezzz🙏🏻☺️
+                Sugeng Rawuh Dhateng  Kampoeng Banana Krezzz Cabang (x) &#13;&#13;• Rombongan : $rombongan &#13;• Tabuh : " . date("Y-m-d") . "&#13;• Total Belanja : $belanja_rp &#13;&#13;Matur Suwun sampun pinarak Kampoeng Banana Krezzz🙏🏻☺️
                 ")
             ->save();
 
@@ -544,7 +544,8 @@ class PresensiController extends Controller
         return back()->with('berhasil_update_crew', 'oke');
     }
 
-    public function formatNomor($phone) {
+    public function formatNomor($phone)
+    {
         $phone = preg_replace('/[^0-9]/', '', $phone); // hapus karakter selain angka
         if (substr($phone, 0, 2) === '62') {
             return $phone;
@@ -587,16 +588,16 @@ class PresensiController extends Controller
             'lokasi' => $lokasi
 
         ]);
-        
+
         $belanja_rp = presensi::where('card_id', $request->card_id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->sum('belanja');
         $belanja_rp = $this->rupiah($belanja_rp);
         presensi::where('card_id', $request->card_id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->update(['reward' => true]);
-    
-        $phone = card::where('id',$request->card_id)->first()->hp;
+
+        $phone = card::where('id', $request->card_id)->first()->hp;
         $phone = $this->formatNomor($phone);
-        
-        $api_key_wa = "u2a53a9beb36e4f5.7dc9be52f701442cafbf96cc899838f8"; 
-        $url_wa = 'https://wa5901.oneapi.my.id/api/v1/messages';
+
+        $api_key_wa = "uc2af632eb985457.ec7cc53448054d67bd738b54435f2502";
+        $url_wa = 'https://wa51596.oneapi.my.id/api/v1/messages';
 
         $client = new MessageBuilder([
             'api_url' => $url_wa,
@@ -662,8 +663,8 @@ class PresensiController extends Controller
             session()->flash('nomor', 1);
             session()->flash('presensis', Presensi::where('card_id', $card->id)->latest()->get());
             session()->flash('jumlah', Presensi::where('card_id', $card->id)->count());
-            session()->flash('sudah_klaim', presensi::where('card_id', $card->id)->where('reward',1)->count());
-            session()->flash('belum_klaim', presensi::where('card_id', $card->id)->where('status',2)->where('status_approve',1)->where('reward',0)->count());
+            session()->flash('sudah_klaim', presensi::where('card_id', $card->id)->where('reward', 1)->count());
+            session()->flash('belum_klaim', presensi::where('card_id', $card->id)->where('status', 2)->where('status_approve', 1)->where('reward', 0)->count());
             session()->flash('total_card', Presensi::where('card_id', $card->id)->where('status', 2)->count());
             session()->flash('total_crew', Presensi::where('card_id', $card->id)->where('status', 1)->count());
             session()->flash('crews', Card::where('id', $card->id)->get());
@@ -740,8 +741,8 @@ class PresensiController extends Controller
         $ktp = $request->ktp;
 
         // Cari data crew yang nomornya mengandung KTP yang diinputkan
-       $data = Card::where('nik', 'like', "%$ktp%")->get();
-    \Log::info('Query executed: ' . Card::where('nik', 'like', "%$ktp%")->toSql());
+        $data = Card::where('nik', 'like', "%$ktp%")->get();
+        \Log::info('Query executed: ' . Card::where('nik', 'like', "%$ktp%")->toSql());
 
 
         if ($data->count() > 0) {
@@ -757,7 +758,8 @@ class PresensiController extends Controller
         }
     }
 
-    function rupiah($angka){
+    function rupiah($angka)
+    {
         $hasil_rupiah = "Rp " . number_format((float) ($angka ?? 0), 0, ',', '.');
         return $hasil_rupiah;
     }
@@ -833,7 +835,7 @@ class PresensiController extends Controller
 }
 
 
-class MessageBuilder 
+class MessageBuilder
 {
     private $apiKey;
     private $apiUrl;
@@ -854,22 +856,25 @@ class MessageBuilder
 
     private $errors;
 
-    public function __construct(array $args) {
+    public function __construct(array $args)
+    {
         $this->apiKey = $args['api_key'] ?? '';
         $this->apiUrl = $args['api_url'] ?? '';
 
         $this->messageType = 'text';
     }
 
-    public function type(string $type) {
+    public function type(string $type)
+    {
         $this->messageType = $type;
 
         return $this;
     }
-    
-    public function to(?string $param) {
-        $param = is_array($param) ? 
-            implode(',', $this->filterPhones($param)) : 
+
+    public function to(?string $param)
+    {
+        $param = is_array($param) ?
+            implode(',', $this->filterPhones($param)) :
             self::filterPhone($param);
 
         $this->to = $param;
@@ -880,40 +885,46 @@ class MessageBuilder
         return $this;
     }
 
-    public function header(string $param) {
+    public function header(string $param)
+    {
         $this->headerType = !filter_var($param, FILTER_VALIDATE_URL) === false ? 'image' : 'text';
         $this->headerValue = $param;
 
         return $this;
     }
 
-    public function attachmentUrl(string $param) {
+    public function attachmentUrl(string $param)
+    {
         $this->headerType = 'link';
         $this->attachmentUrl = $param;
 
         return $this;
     }
 
-    public function content(string $param) {
+    public function content(string $param)
+    {
         $this->bodyValue = $param;
 
         return $this;
     }
 
-    public function footer(string $param) {
+    public function footer(string $param)
+    {
         $this->footerValue = $param;
 
         return $this;
     }
 
-    public function save() {
+    public function save()
+    {
         $message = $this->buildMessageData();
         $this->resetMessage();
 
         return $message;
     }
 
-    public function resetMessage() {
+    public function resetMessage()
+    {
         $this->messageType = 'text';
         $this->to = null;
         $this->recipientType = 'individual';
@@ -927,7 +938,8 @@ class MessageBuilder
         $this->sectionButtonLabel = null;
     }
 
-    public function send($messageList = []) {
+    public function send($messageList = [])
+    {
 
         if (count($messageList) > 0) {
             $this->messages = $messageList;
@@ -957,7 +969,7 @@ class MessageBuilder
                 CURLOPT_POSTFIELDS      => json_encode($this->messages),
                 CURLOPT_HTTPHEADER      => $headers,
             ));
-    
+
             $response = curl_exec($curl);
             curl_close($curl);
 
@@ -976,11 +988,11 @@ class MessageBuilder
         return $this->senderClient->send(
             $this->messages
         );
-
     }
 
 
-    public function addButtonLink($label, $url) {
+    public function addButtonLink($label, $url)
+    {
         if ($this->messageType == 'interactive_dev') {
             $this->templateDevButtons[] = [
 
@@ -991,12 +1003,13 @@ class MessageBuilder
                 ],
             ];
         }
-        
+
         return $this;
     }
 
-    
-    public function addButtonCall($label, $url) {
+
+    public function addButtonCall($label, $url)
+    {
         if ($this->messageType == 'interactive_dev') {
             $this->templateDevButtons[] = [
                 'type'      => 'call',
@@ -1006,21 +1019,23 @@ class MessageBuilder
                 ],
             ];
         }
-        
+
         return $this;
     }
 
 
 
-    private function buildTextMessage() {
+    private function buildTextMessage()
+    {
         return [
             'text' => [
                 'body' => $this->bodyValue,
             ]
         ];
     }
-    
-    private function buildImageMessage() {
+
+    private function buildImageMessage()
+    {
         return [
             'image' => [
                 'link' => $this->attachmentUrl,
@@ -1029,7 +1044,8 @@ class MessageBuilder
         ];
     }
 
-    private function buildDocMessage() {
+    private function buildDocMessage()
+    {
         return [
             'document' => [
                 'link' => $this->attachmentUrl,
@@ -1037,7 +1053,8 @@ class MessageBuilder
         ];
     }
 
-    private function buildTemplateDevMessage() {
+    private function buildTemplateDevMessage()
+    {
         $output = [
             'header' => [
                 'type' => $this->headerType,
@@ -1068,21 +1085,22 @@ class MessageBuilder
     }
 
 
-    private function buildMessageData() {
+    private function buildMessageData()
+    {
 
         switch ($this->messageType) {
             case 'image':
                 $message = $this->buildImageMessage();
                 break;
-            
+
             case 'document':
                 $message = $this->buildDocMessage();
                 break;
-                
+
             case 'interactive_dev':
                 $message = $this->buildTemplateDevMessage();
                 break;
-                
+
             default:
                 $message = $this->buildTextMessage();
                 break;
@@ -1094,32 +1112,36 @@ class MessageBuilder
             'recipient_type' => $this->recipientType,
         ];
 
-        
+
         return array_merge($fields, $message);
     }
-   
-    private function strContains($string, $search) {
+
+    private function strContains($string, $search)
+    {
         return strpos($string, $search) !== false;
     }
 
-    public static function filterPhone(string $phone) {
+    public static function filterPhone(string $phone)
+    {
         $phoneStr = preg_replace('/[^0-9]+/', '', $phone);
         if (substr($phoneStr, 0, 2) == '08') {
             $phoneStr = '628' . substr($phoneStr, 2);
         }
-        
+
         if (strpos($phone, '@g.us') == false) {
             $phoneStr .= '@g.us';
         }
 
         return $phone;
     }
-    
-    private function filterPhones(array $phones) {
-        return array_walk_recursive($phones, function(&$v, $k) { 
-                $v = self::filterPhone($v); 
+
+    private function filterPhones(array $phones)
+    {
+        return array_walk_recursive(
+            $phones,
+            function (&$v, $k) {
+                $v = self::filterPhone($v);
             }
         );
     }
-
 }
