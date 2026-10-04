@@ -182,8 +182,8 @@ class PresensiController extends Controller
                     $phone = $this->formatNomor($phone);
                     $storeName = store::where('id', Auth::user()->store_id)->value('nama');
 
-                    $api_key_wa = "u2a53a9beb36e4f5.7dc9be52f701442cafbf96cc899838f8";
-                    $url_wa = 'https://wa5901.oneapi.my.id/api/v1/messages';
+                    $api_key_wa = "uc2af632eb985457.ec7cc53448054d67bd738b54435f2502";
+                    $url_wa = 'https://wa51596.oneapi.my.id/api/v1/messages';
 
                     $client = new MessageBuilder([
                         'api_url' => $url_wa,
