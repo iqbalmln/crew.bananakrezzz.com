@@ -13,6 +13,13 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+
+        // Worker antrean WhatsApp untuk hosting tanpa supervisor: jalan tiap menit,
+        // berhenti saat antrean kosong. withoutOverlapping() menjaga hanya ada
+        // satu worker, supaya jeda antar pesan tetap berlaku.
+        $schedule->command('queue:work --queue=whatsapp --stop-when-empty --max-time=50')
+            ->everyMinute()
+            ->withoutOverlapping();
     }
 
     /**
